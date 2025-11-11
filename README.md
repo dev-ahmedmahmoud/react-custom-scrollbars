@@ -1,8 +1,8 @@
 # react-custom-scrollbars
 
-[![npm](https://img.shields.io/badge/npm-react--custom--scrollbars-brightgreen.svg?style=flat-square)]()
-[![npm version](https://img.shields.io/npm/v/react-custom-scrollbars.svg?style=flat-square)](https://www.npmjs.com/package/react-custom-scrollbars)
-[![npm downloads](https://img.shields.io/npm/dm/react-custom-scrollbars.svg?style=flat-square)](https://www.npmjs.com/package/react-custom-scrollbars)
+[![npm](https://img.shields.io/badge/npm-%40dev--ahmed--mahmoud%2Freact--custom--scrollbars-brightgreen.svg?style=flat-square)](https://www.npmjs.com/package/@dev-ahmed-mahmoud/react-custom-scrollbars)
+[![npm version](https://img.shields.io/npm/v/@dev-ahmed-mahmoud/react-custom-scrollbars.svg?style=flat-square)](https://www.npmjs.com/package/@dev-ahmed-mahmoud/react-custom-scrollbars)
+[![npm downloads](https://img.shields.io/npm/dm/@dev-ahmed-mahmoud/react-custom-scrollbars.svg?style=flat-square)](https://www.npmjs.com/package/@dev-ahmed-mahmoud/react-custom-scrollbars)
 
 Modern React scrollbars component with TypeScript support and React 19 compatibility.
 
@@ -22,7 +22,7 @@ Modern React scrollbars component with TypeScript support and React 19 compatibi
 ## 📦 Installation
 
 ```bash
-npm install react-custom-scrollbars
+npm install @dev-ahmed-mahmoud/react-custom-scrollbars
 ```
 
 ## 🚀 Usage
@@ -31,7 +31,7 @@ npm install react-custom-scrollbars
 
 ```typescript
 import React from 'react'
-import { Scrollbars } from 'react-custom-scrollbars'
+import { Scrollbars } from '@dev-ahmed-mahmoud/react-custom-scrollbars'
 
 function App() {
   return (
@@ -46,7 +46,7 @@ function App() {
 
 ```typescript
 import React, { useRef } from 'react'
-import { Scrollbars, ScrollbarsRef, ScrollValues } from 'react-custom-scrollbars'
+import { Scrollbars, ScrollbarsRef, ScrollValues } from '@dev-ahmed-mahmoud/react-custom-scrollbars'
 
 function CustomScrollbars() {
   const scrollbars = useRef<ScrollbarsRef>(null)
