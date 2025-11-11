@@ -16,8 +16,8 @@ export default defineConfig({
     lib: {
       entry: resolve(import.meta.dirname, 'src/index.ts'), // Use import.meta.dirname (Node 20.11+)
       name: 'ReactCustomScrollbars',
-      formats: ['es'],
-      fileName: 'index',
+      formats: ['es', 'cjs'], // Add CommonJS format for Jest compatibility
+      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
       external: ['react', 'react-dom'],

@@ -2,6 +2,23 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [5.0.2] - 2025-11-11
+
+### Fixed
+- 🔧 **Jest Compatibility**: Added CommonJS build alongside ESM for better Jest/testing compatibility
+- 📦 **Dual Module Export**: Package now exports both ESM and CJS formats
+- ✅ **No Configuration Needed**: Works out-of-the-box with Jest in Next.js, CRA, and other environments
+
+### Changed
+- **Build Output**: Now generates both `index.js` (ESM) and `index.cjs` (CommonJS)
+- **Package Exports**: Updated to properly expose both module formats
+
+## [5.0.1] - 2025-11-11
+
+### Fixed
+- 📝 **Documentation**: Updated README with correct scoped package name and installation instructions
+- 🔗 **Package Links**: Fixed npm badges and import examples
+
 ## [5.0.0] - 2025-11-10
 
 ### Breaking Changes
