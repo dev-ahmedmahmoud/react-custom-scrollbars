@@ -1,7 +1,7 @@
 {
-  "name": "react-custom-scrollbars",
+  "name": "@dev-ahmed-mahmoud/react-custom-scrollbars",
   "version": "5.0.0",
-  "description": "Modern React scrollbars component with TypeScript support",
+  "description": "Modern React scrollbars component with TypeScript support and React 19 compatibility",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -42,9 +42,26 @@
     "react",
     "custom",
     "hooks",
-    "typescript"
+    "typescript",
+    "react19",
+    "modern",
+    "customizable",
+    "performance",
+    "cross-browser",
+    "mobile-friendly"
   ],
-  "author": "Malte Wessel",
+  "author": {
+    "name": "Ahmed Mahmoud",
+    "email": "dev.ahmedmahmoud@gmail.com",
+    "url": "https://github.com/dev-ahmedmahmoud"
+  },
+  "contributors": [
+    {
+      "name": "Malte Wessel",
+      "email": "malte.wessel@gmail.com", 
+      "url": "https://github.com/malte-wessel"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dev-ahmedmahmoud/react-custom-scrollbars/issues"
