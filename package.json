@@ -1,6 +1,6 @@
 {
   "name": "@dev-ahmed-mahmoud/react-custom-scrollbars",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Modern React scrollbars component with TypeScript support and React 19 compatibility",
   "type": "module",
   "main": "./dist/index.js",
