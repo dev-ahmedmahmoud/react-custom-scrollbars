@@ -21,9 +21,17 @@ Modern React scrollbars component with TypeScript support and React 19 compatibi
 
 ## 📦 Installation
 
+[![npm package](https://img.shields.io/npm/v/@dev-ahmed-mahmoud/react-custom-scrollbars.svg?style=for-the-badge)](https://www.npmjs.com/package/@dev-ahmed-mahmoud/react-custom-scrollbars)
+
 ```bash
 npm install @dev-ahmed-mahmoud/react-custom-scrollbars
 ```
+
+**Package Info:**
+- 📋 **Package**: `@dev-ahmed-mahmoud/react-custom-scrollbars`
+- 🌐 **Registry**: [npm](https://www.npmjs.com/package/@dev-ahmed-mahmoud/react-custom-scrollbars)
+- 📊 **Bundle size**: ~18KB (5.4KB gzipped)
+- 🏷️ **License**: MIT
 
 ## 🚀 Usage
 
