@@ -1,4 +1,4 @@
-import random from 'lodash/number/random';
+import random from 'lodash/random';
 import React, { Component } from 'react';
 import SpringScrollbars from './SpringScrollbars';
 
@@ -37,7 +37,7 @@ export default class App extends Component {
                 <button
                     onClick={this.handleClickRandomPosition}
                     className="btn btn-primary">
-                    <i className="fa fa-random"/> Random position
+                    <i className="fa fa-random" /> Random position
                 </button>
                 <p>
                     The Scrollbars are animated with <strong><a href="https://github.com/facebook/rebound-js" target="_blank">Rebound</a></strong>. You can simply animate the Scrollbars with <code>scrollbars.scrollTop(x)</code>. Don't forget to wrap your steps with <code>requestAnimationFrame</code>.
