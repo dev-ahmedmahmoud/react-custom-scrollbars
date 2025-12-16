@@ -116,6 +116,12 @@ export const Scrollbars = forwardRef<ScrollbarsRef, ScrollbarsProps>(
     const viewScrollLeftRef = useRef(0)
     const viewScrollTopRef = useRef(0)
 
+    // Dragging state refs (following legacy pattern)
+    const draggingRef = useRef(false)
+    const prevPageXRef = useRef(0)
+    const prevPageYRef = useRef(0)
+    const trackMouseOverRef = useRef(false)
+
     // Utility functions
     const getValues = useCallback((): ScrollValues => {
       const view = viewRef.current
@@ -180,6 +186,169 @@ export const Scrollbars = forwardRef<ScrollbarsRef, ScrollbarsProps>(
       if (thumbSize) return thumbSize
       return Math.max(height, thumbMinSize)
     }, [thumbSize, thumbMinSize])
+
+    // Helper functions for offset calculations (from legacy)
+    const getScrollLeftForOffset = useCallback(
+      (offset: number) => {
+        const view = viewRef.current
+        const trackHorizontal = trackHorizontalRef.current
+        if (!view || !trackHorizontal) return 0
+
+        const { scrollWidth, clientWidth } = view
+        const trackWidth = getInnerWidth(trackHorizontal)
+        const thumbWidth = getThumbHorizontalWidth()
+
+        return (
+          (offset / (trackWidth - thumbWidth)) * (scrollWidth - clientWidth)
+        )
+      },
+      [getThumbHorizontalWidth]
+    )
+
+    const getScrollTopForOffset = useCallback(
+      (offset: number) => {
+        const view = viewRef.current
+        const trackVertical = trackVerticalRef.current
+        if (!view || !trackVertical) return 0
+
+        const { scrollHeight, clientHeight } = view
+        const trackHeight = getInnerHeight(trackVertical)
+        const thumbHeight = getThumbVerticalHeight()
+
+        return (
+          (offset / (trackHeight - thumbHeight)) * (scrollHeight - clientHeight)
+        )
+      },
+      [getThumbVerticalHeight]
+    )
+
+    // Drag setup/teardown (from legacy)
+    const setupDragging = useCallback(() => {
+      document.body.style.userSelect = 'none'
+      document.onselectstart = () => false
+    }, [])
+
+    const teardownDragging = useCallback(() => {
+      document.body.style.userSelect = ''
+      document.onselectstart = null
+    }, [])
+
+    // handleDrag - called on mousemove during drag (from legacy)
+    const handleDrag = useCallback(
+      (event: MouseEvent) => {
+        if (prevPageXRef.current) {
+          const { clientX } = event
+          const trackHorizontal = trackHorizontalRef.current
+          if (trackHorizontal && viewRef.current) {
+            const { left: trackLeft } = trackHorizontal.getBoundingClientRect()
+            const thumbWidth = getThumbHorizontalWidth()
+            const clickPosition = thumbWidth - prevPageXRef.current
+            const offset = -trackLeft + clientX - clickPosition
+            viewRef.current.scrollLeft = getScrollLeftForOffset(offset)
+          }
+        }
+        if (prevPageYRef.current) {
+          const { clientY } = event
+          const trackVertical = trackVerticalRef.current
+          if (trackVertical && viewRef.current) {
+            const { top: trackTop } = trackVertical.getBoundingClientRect()
+            const thumbHeight = getThumbVerticalHeight()
+            const clickPosition = thumbHeight - prevPageYRef.current
+            const offset = -trackTop + clientY - clickPosition
+            viewRef.current.scrollTop = getScrollTopForOffset(offset)
+          }
+        }
+        return false
+      },
+      [
+        getScrollLeftForOffset,
+        getScrollTopForOffset,
+        getThumbHorizontalWidth,
+        getThumbVerticalHeight,
+      ]
+    )
+
+    // handleDragEnd - called on mouseup (from legacy)
+    const handleDragEnd = useCallback(() => {
+      draggingRef.current = false
+      prevPageXRef.current = 0
+      prevPageYRef.current = 0
+      teardownDragging()
+      document.removeEventListener('mousemove', handleDrag)
+      document.removeEventListener('mouseup', handleDragEnd)
+    }, [teardownDragging, handleDrag])
+
+    // handleDragStart - called on thumb mousedown (from legacy)
+    const handleDragStart = useCallback(
+      (event: MouseEvent) => {
+        draggingRef.current = true
+        event.stopImmediatePropagation()
+        setupDragging()
+        document.addEventListener('mousemove', handleDrag)
+        document.addEventListener('mouseup', handleDragEnd)
+      },
+      [setupDragging, handleDrag, handleDragEnd]
+    )
+
+    // Track mouse down handlers (from legacy)
+    const handleHorizontalTrackMouseDown = useCallback(
+      (event: MouseEvent) => {
+        event.preventDefault()
+        const target = event.target as HTMLElement
+        const { clientX } = event
+        const { left: targetLeft } = target.getBoundingClientRect()
+        const thumbWidth = getThumbHorizontalWidth()
+        const offset = Math.abs(targetLeft - clientX) - thumbWidth / 2
+
+        if (viewRef.current) {
+          viewRef.current.scrollLeft = getScrollLeftForOffset(offset)
+        }
+      },
+      [getScrollLeftForOffset, getThumbHorizontalWidth]
+    )
+
+    const handleVerticalTrackMouseDown = useCallback(
+      (event: MouseEvent) => {
+        event.preventDefault()
+        const target = event.target as HTMLElement
+        const { clientY } = event
+        const { top: targetTop } = target.getBoundingClientRect()
+        const thumbHeight = getThumbVerticalHeight()
+        const offset = Math.abs(targetTop - clientY) - thumbHeight / 2
+
+        if (viewRef.current) {
+          viewRef.current.scrollTop = getScrollTopForOffset(offset)
+        }
+      },
+      [getScrollTopForOffset, getThumbVerticalHeight]
+    )
+
+    // Thumb mouse down handlers (from legacy)
+    const handleHorizontalThumbMouseDown = useCallback(
+      (event: MouseEvent) => {
+        event.preventDefault()
+        handleDragStart(event)
+        const target = event.target as HTMLElement
+        const { clientX } = event
+        const { offsetWidth } = target
+        const { left } = target.getBoundingClientRect()
+        prevPageXRef.current = offsetWidth - (clientX - left)
+      },
+      [handleDragStart]
+    )
+
+    const handleVerticalThumbMouseDown = useCallback(
+      (event: MouseEvent) => {
+        event.preventDefault()
+        handleDragStart(event)
+        const target = event.target as HTMLElement
+        const { clientY } = event
+        const { offsetHeight } = target
+        const { top } = target.getBoundingClientRect()
+        prevPageYRef.current = offsetHeight - (clientY - top)
+      },
+      [handleDragStart]
+    )
 
     // Scroll methods for imperative API
     const scrollLeft = useCallback((left = 0) => {
@@ -365,6 +534,21 @@ export const Scrollbars = forwardRef<ScrollbarsRef, ScrollbarsProps>(
       }
     }, [autoHide])
 
+    // Track mouse enter/leave handlers for auto-hide (from legacy)
+    const handleTrackMouseEnter = useCallback(() => {
+      trackMouseOverRef.current = true
+      if (autoHide) {
+        showScrollbars()
+      }
+    }, [autoHide, showScrollbars])
+
+    const handleTrackMouseLeave = useCallback(() => {
+      trackMouseOverRef.current = false
+      if (autoHide) {
+        hideScrollbars()
+      }
+    }, [autoHide, hideScrollbars])
+
     // Event handlers
     const handleScroll = useCallback(
       (event: Event) => {
@@ -459,6 +643,77 @@ export const Scrollbars = forwardRef<ScrollbarsRef, ScrollbarsProps>(
         }
       }
     }, [handleScroll, autoHide, showScrollbars, hideScrollbars])
+
+    // Effect to add track/thumb mouse listeners (from legacy addListeners)
+    useEffect(() => {
+      const trackHorizontal = trackHorizontalRef.current
+      const trackVertical = trackVerticalRef.current
+      const thumbHorizontal = thumbHorizontalRef.current
+      const thumbVertical = thumbVerticalRef.current
+
+      // Don't add listeners if no native scrollbar width
+      if (!getScrollbarWidth()) return
+
+      if (
+        !trackHorizontal ||
+        !trackVertical ||
+        !thumbHorizontal ||
+        !thumbVertical
+      )
+        return
+
+      // Wrapper functions to properly type the event handlers
+      const onHorizontalTrackMouseDown = (e: Event) =>
+        handleHorizontalTrackMouseDown(e as MouseEvent)
+      const onVerticalTrackMouseDown = (e: Event) =>
+        handleVerticalTrackMouseDown(e as MouseEvent)
+      const onHorizontalThumbMouseDown = (e: Event) =>
+        handleHorizontalThumbMouseDown(e as MouseEvent)
+      const onVerticalThumbMouseDown = (e: Event) =>
+        handleVerticalThumbMouseDown(e as MouseEvent)
+
+      // Add event listeners
+      trackHorizontal.addEventListener('mouseenter', handleTrackMouseEnter)
+      trackHorizontal.addEventListener('mouseleave', handleTrackMouseLeave)
+      trackHorizontal.addEventListener('mousedown', onHorizontalTrackMouseDown)
+      trackVertical.addEventListener('mouseenter', handleTrackMouseEnter)
+      trackVertical.addEventListener('mouseleave', handleTrackMouseLeave)
+      trackVertical.addEventListener('mousedown', onVerticalTrackMouseDown)
+      thumbHorizontal.addEventListener('mousedown', onHorizontalThumbMouseDown)
+      thumbVertical.addEventListener('mousedown', onVerticalThumbMouseDown)
+
+      return () => {
+        // Remove event listeners
+        trackHorizontal.removeEventListener('mouseenter', handleTrackMouseEnter)
+        trackHorizontal.removeEventListener('mouseleave', handleTrackMouseLeave)
+        trackHorizontal.removeEventListener(
+          'mousedown',
+          onHorizontalTrackMouseDown
+        )
+        trackVertical.removeEventListener('mouseenter', handleTrackMouseEnter)
+        trackVertical.removeEventListener('mouseleave', handleTrackMouseLeave)
+        trackVertical.removeEventListener('mousedown', onVerticalTrackMouseDown)
+        thumbHorizontal.removeEventListener(
+          'mousedown',
+          onHorizontalThumbMouseDown
+        )
+        thumbVertical.removeEventListener('mousedown', onVerticalThumbMouseDown)
+
+        // Teardown any ongoing drag
+        draggingRef.current = false
+        prevPageXRef.current = 0
+        prevPageYRef.current = 0
+        document.body.style.userSelect = ''
+        document.onselectstart = null
+      }
+    }, [
+      handleTrackMouseEnter,
+      handleTrackMouseLeave,
+      handleHorizontalTrackMouseDown,
+      handleVerticalTrackMouseDown,
+      handleHorizontalThumbMouseDown,
+      handleVerticalThumbMouseDown,
+    ])
 
     // Imperative API
     useImperativeHandle(
