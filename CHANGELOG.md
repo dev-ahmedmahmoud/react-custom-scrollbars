@@ -2,6 +2,25 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [5.0.3] - 2025-12-16
+
+### Fixed
+- 🖱️ **Scrollbar Interactivity**: Fixed critical issue where dragging the scrollbar thumb or clicking on the track did not scroll content (#1)
+- 📜 **Vertical/Horizontal Scroll**: Both vertical and horizontal scrollbars now properly respond to user interaction
+
+### Added
+- 🧪 **Comprehensive Tests**: Added 10 new tests for scrollbar interaction functionality:
+  - Track click handling (vertical/horizontal)
+  - Thumb drag functionality (vertical/horizontal)
+  - Drag state management (userSelect, cleanup)
+  - Event listener attachment/removal
+  - Auto-hide track mouse enter/leave
+  - Cleanup on unmount during active drag
+
+### Changed
+- ⚡ **Event Handling**: Implemented proper event listener attachment using wrapper functions for better TypeScript compatibility
+- 🔧 **Examples**: Migrated `examples/simple` from Webpack to Vite for easier development
+
 ## [5.0.2] - 2025-11-11
 
 ### Fixed
